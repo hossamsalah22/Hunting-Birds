@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Shooting Birds</title>
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="menu">
+				<form action="game.html" method="get">
+					<label for="username">
+						enter your name
+						<input type="text" placeholder="Enter your name" name="username" id="username" required />
+					</label>
+
+					<input type="submit" value="Go" />
+				</form>
+			</div>
+			<div class="rules">
+				<h2>Hunting Points</h2>
+				<table>
+					<tr>
+						<td><img src="./images/black.gif" alt="blackBird" class="blackBird" /></td>
+						<td><span class="small">+10 Points</span></td>
+					</tr>
+					<tr>
+						<td><img src="images/cyan.gif" alt="cyanBird" class="cyanBird" /></td>
+						<td><span class="medium">+5 Points</span></td>
+					</tr>
+					<tr>
+						<td><img src="./images/white.gif" alt="whiteBird" class="whiteBird" /></td>
+						<td><span class="large">-10 Points</span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
