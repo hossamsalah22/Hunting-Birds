@@ -1,15 +1,25 @@
-function getName() {
-	url = new URL(location.href);
-	let name = url.searchParams.get("username");
-	return name;
-}
+let params = new URL(location.href);
+let userName = params.searchParams.get("username");
+let birdsSound = new Audio("../sounds/bgmusic.mp3");
+let gun = new Audio("../sounds/kill.mp3");
 
-//To get Random POsitions
+// Prevent Dragable
+document.addEventListener("dragstart", function (e) {
+	if (e.target.matches("img")) {
+		e.preventDefault();
+	}
+});
+
+document.addEventListener("click", function () {
+	gun.play();
+});
+
+//Random Postion
 function random(dimension = window.innerHeight) {
 	return Math.floor(Math.random() * Math.ceil(dimension));
 }
 
-//Bird Flying Iteration
+//Start Flying
 function flyRight(obj, value) {
 	let posX = parseInt(obj.style.left);
 	if (posX + value + obj.width > window.innerWidth) {
@@ -20,17 +30,17 @@ function flyRight(obj, value) {
 	obj.style.left = posX + "px";
 }
 
-let smallBirdObj = {
+let blackBird = {
 	src: "../images/black.gif",
 	score: 10,
 };
 
-let mediumBirdObj = {
+let cyanBird = {
 	src: "../images/cyan.gif",
 	score: 5,
 };
 
-let bigBirdObj = {
+let whiteBird = {
 	src: "../images/white.gif",
 	score: -10,
 };
@@ -38,7 +48,7 @@ let bigBirdObj = {
 class Bird {
 	#bird;
 	static score = 0;
-	static birdsKilled = 0;
+	static kills = 0;
 	constructor(object) {
 		this.score = object["score"];
 		this.#bird = document.createElement("img");
@@ -51,17 +61,15 @@ class Bird {
 		this.#bird.style.left = "0px";
 		this.#bird.onclick = () => {
 			Bird.score += this.score;
-			Bird.birdsKilled++;
-			this.#bird.remove();
+			Bird.kills++;
 			document.getElementById("score").innerHTML = `Score:${Bird.score}`;
-			document.getElementById("birdsKilled").innerHTML = `Birds Killed:${Bird.birdsKilled}`;
+			document.getElementById("kills").innerHTML = `Birds Killed:${Bird.kills}`;
+			this.#bird.src = "../images/dead.png";
+			setTimeout(() => {
+				this.#bird.remove();
+			}, 500);
 		};
 		document.body.append(this.#bird);
-	}
-
-	//Get Bird Img
-	get birdImg() {
-		return this.#bird;
 	}
 
 	//Flying Function
@@ -77,7 +85,7 @@ class Bird {
 	}
 }
 
-//Bomb Dropping Iteration
+//Bomb
 function dropBomb(obj, value) {
 	let posY = parseInt(obj.style.top);
 	if (posY + value + obj.height > window.innerHeight) {
@@ -88,19 +96,15 @@ function dropBomb(obj, value) {
 	obj.style.top = posY + "px";
 }
 
-let bombObject = {
-	src: "../images/bomb.gif",
-};
-
 class Bomb {
 	#bomb;
 	constructor() {
 		this.#bomb = document.createElement("img");
-		this.#bomb.src = bombObject["src"];
-		this.#bomb.width = 150;
-		this.#bomb.height = 150;
-		this.#bomb.style.zIndex = 999;
+		this.#bomb.src = "../images/bomb.gif";
+		this.#bomb.width = 200;
+		this.#bomb.height = 200;
 		this.#bomb.style.position = "absolute";
+		this.#bomb.style.zIndex = 1;
 		this.#bomb.style.left = random(window.innerWidth - this.#bomb.width) + "px";
 		this.#bomb.style.top = "0px";
 		this.#bomb.onclick = () => {
@@ -111,12 +115,11 @@ class Bomb {
 
 			let birds = document.querySelectorAll("img.bird");
 			for (let bird of birds) {
-				//Idea Refernce: https://www.youtube.com/watch?v=_MyPLZSGS3s
 				if (
-					parseInt(bird.style.left) + bird.width >= parseInt(this.#bomb.style.left) &&
-					parseInt(bird.style.left) <= parseInt(this.#bomb.style.left) + this.#bomb.width + 150 &&
-					parseInt(bird.style.top) + bird.height >= parseInt(this.#bomb.style.top) &&
-					parseInt(bird.style.top) <= parseInt(this.#bomb.style.top) + this.#bomb.height + 150
+					parseInt(bird.style.left) + bird.width >= parseInt(this.#bomb.style.left) + 100 &&
+					parseInt(bird.style.left) <= parseInt(this.#bomb.style.left) + this.#bomb.width + 100 &&
+					parseInt(bird.style.top) + bird.height >= parseInt(this.#bomb.style.top) + 100 &&
+					parseInt(bird.style.top) <= parseInt(this.#bomb.style.top) + this.#bomb.height + 100
 				) {
 					bird.click();
 				}
@@ -138,11 +141,12 @@ class Bomb {
 }
 
 window.addEventListener("load", function () {
+	// birdsSound.play();
 	let timer = 59;
-	let birdsArray = [smallBirdObj, mediumBirdObj, bigBirdObj];
+	let birdsArray = [blackBird, cyanBird, whiteBird];
 	let randomBird;
 
-	document.getElementById("name").innerHTML = `Username:${getName()}`;
+	document.getElementById("name").innerHTML = `Username:${userName}`;
 
 	let id = this.setInterval(function () {
 		randomBird = birdsArray[Math.floor(Math.random() * birdsArray.length)];
@@ -163,12 +167,12 @@ window.addEventListener("load", function () {
 
 			if (Bird.score >= 50) {
 				document.querySelector("#resultText").innerHTML = `
-                        Congats <font color="yellow"> ${getName()}</font> </br>
+                        Congats <font color="yellow"> ${userName}</font> </br>
                         You Won </br>
                        `;
 			} else {
 				document.querySelector("#resultText").innerHTML = `
-                        Sorry <font color="yellow"> ${getName()}</font> </br>
+                        Sorry <font color="yellow"> ${userName}</font> </br>
                         You Lost
                        `;
 			}
@@ -178,3 +182,11 @@ window.addEventListener("load", function () {
 		}
 	}, 1000);
 });
+
+let score = function () {
+	let parsing = JSON.parse(localStorage.getItem(userName));
+	$("h1 span:first").text(userName);
+	if (parsing.name == userName) {
+		$(".score h2:last span").text(parsing.score);
+	}
+};
