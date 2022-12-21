@@ -2,7 +2,9 @@
 <html lang="en">
 	<head>
 		<title>Hunting</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<link rel="stylesheet" href="css/login.css" />
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
 	</head>
@@ -10,32 +12,46 @@
 	<body>
 		<div class="row">
 			<div class="offset-4 col-4">
-				<div class="login-page">
+				<div class="loginPage">
 					<div class="form">
 						<form class="login-form" action="game.html" id="loginForm">
 							<input type="text" name="username" placeholder="Plz Enter Your Name" class="form-control" required />
-							<select name="levels" id="gameLevels" class="form-control" required>
+							<select name="level" id="level" class="form-control" required>
 								<option value="" disabled selected hidden>Choose your level</option>
-								<option value="level1">level 1</option>
+								<option value="1">level 1</option>
+								<option value="2">level 2</option>
+								<option value="3">level 3</option>
 							</select>
 							<button type="submit" value="Submit" form="loginForm">submit</button>
 						</form>
 					</div>
 				</div>
 			</div>
-			<div class="offset-4 col-4 lead rounded mb-2">
-				<h2>Leaders Board</h2>
+			<div class="offset-4 col-4 points rounded mb-2">
+				<h2>Birds Points</h2>
 				<table class="table">
 					<thead>
 						<tr>
-							<th scope="col">Name</th>
-							<th scope="col">Score</th>
+							<th scope="col">Bird</th>
+							<th scope="col">Points</th>
 						</tr>
 					</thead>
-					<tbody></tbody>
+					<tbody>
+						<tr>
+							<th scope="col"><img src="images/black.gif" /></th>
+							<th scope="col">+10</th>
+						</tr>
+						<tr>
+							<th scope="col"><img src="images/cyan.gif" /></th>
+							<th scope="col">+5</th>
+						</tr>
+						<tr>
+							<th scope="col"><img src="images/white.gif" /></th>
+							<th scope="col">-10</th>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</div>
-		<script src="js/login.js"></script>
 	</body>
 </html>
