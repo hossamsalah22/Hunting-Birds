@@ -1,3 +1,6 @@
+let startMessage = document.querySelector(".startMessage");
+let overlay = document.querySelector(".overlay");
+let startGame = document.querySelector(".startGame"); // Start & Overlay
 let windowWidth = window.innerWidth;
 let params = new URL(location.href);
 let userName = params.searchParams.get("username");
@@ -29,6 +32,15 @@ let whiteBird = {
 	score: -10,
 }; // White Bird SRC with Score
 
+let hideStart = function () {
+	startMessage.classList.add("hidden");
+	overlay.classList.add("hidden");
+}; // hide Overlay & popUp
+
+let showOverlay = function () {
+	overlay.classList.remove("hidden");
+}; // Show Overlay
+
 document.addEventListener("dragstart", function (event) {
 	if (event.target.matches("img")) {
 		event.preventDefault();
@@ -41,16 +53,16 @@ document.addEventListener("click", function () {
 
 function random(windowWidth) {
 	return Math.floor(Math.random() * Math.ceil(windowWidth));
-} //Create Random Position
+} //Create Random Number between 0 & innerWidth
 
 function startFlying(bird, value) {
-	let positionX = parseInt(bird.style.left);
-	if (positionX + value + bird.width > window.innerWidth) {
-		positionX = window.innerWidth - bird.width;
+	let leftPosition = parseInt(bird.style.left);
+	if (leftPosition + value + bird.width > window.innerWidth) {
+		leftPosition = window.innerWidth - bird.width;
 	} else {
-		positionX += value;
+		leftPosition += value;
 	}
-	bird.style.left = positionX + "px";
+	bird.style.left = leftPosition + "px";
 } //Start Flying
 
 class Bird {
@@ -83,7 +95,7 @@ class Bird {
 	//Flying Function
 	fly() {
 		let flying = setInterval(() => {
-			let positionX = parseInt(this.#newBird.style.left);
+			let leftPosition = parseInt(this.#newBird.style.left);
 			if (level == 1) {
 				startFlying(this.#newBird, 10);
 			} else if (level == 2) {
@@ -91,7 +103,7 @@ class Bird {
 			} else if (level == 3) {
 				startFlying(this.#newBird, 40);
 			}
-			if (positionX >= window.innerWidth - this.#newBird.width) {
+			if (leftPosition >= window.innerWidth - this.#newBird.width) {
 				clearInterval(flying);
 				this.#newBird.remove();
 			}
@@ -134,7 +146,7 @@ class Bomb {
 
 	drop() {
 		let id = setInterval(() => {
-			let positionY = parseInt(this.#bomb.style.top);
+			let topPosition = parseInt(this.#bomb.style.top);
 			if (level == 1) {
 				dropBomb(this.#bomb, 10);
 			} else if (level == 2) {
@@ -142,7 +154,7 @@ class Bomb {
 			} else if (level == 3) {
 				dropBomb(this.#bomb, 35);
 			}
-			if (positionY >= window.innerHeight - this.#bomb.height) {
+			if (topPosition >= window.innerHeight - this.#bomb.height) {
 				clearInterval(id);
 				this.#bomb.remove();
 			}
@@ -150,14 +162,14 @@ class Bomb {
 	}
 } //Bomb Class
 
-function dropBomb(bird, value) {
-	let positionY = parseInt(bird.style.top);
-	if (positionY + value + bird.height > window.innerHeight) {
-		positionY = window.innerHeight - bird.height;
+function dropBomb(bomb, value) {
+	let topPosition = parseInt(bomb.style.top);
+	if (topPosition + value + bomb.height > window.innerHeight) {
+		topPosition = window.innerHeight - bomb.height;
 	} else {
-		positionY += value;
+		topPosition += value;
 	}
-	bird.style.top = positionY + "px";
+	bomb.style.top = topPosition + "px";
 } // Drop Bomb
 
 function randomBirds(birdsArray) {
@@ -166,48 +178,50 @@ function randomBirds(birdsArray) {
 } // create Random Bird
 
 window.addEventListener("load", function () {
-	// bgSound.play();
+	bgSound.play();
 	let timer = 60;
 	let birdsArray = [blackBird, cyanBird, whiteBird];
-
 	currentUser.textContent = `Username:${userName}`;
 	currentLevel.textContent = `Level:${level}`;
+	startGame.addEventListener("click", function () {
+		hideStart();
+		let birdsInterval = window.setInterval(function () {
+			for (let i = 0; i < 4; i++) {
+				randomBirds(birdsArray);
+			} // create birds
 
-	let birdsInterval = this.setInterval(function () {
-		for (let i = 0; i < 4; i++) {
-			randomBirds(birdsArray);
-		} // create birds
-
-		//BOMB Creation
-		if (timer % 7 == 0) {
-			let bomb = new Bomb();
-			bomb.drop();
-		}
-
-		timer--;
-
-		timeLeft.textContent = `Timer 00:${timer}`;
-		if (timer == 0) {
-			clearInterval(birdsInterval);
-			resultPop.style.display = "block";
-			bgSound.pause();
-			if (Bird.score >= 50) {
-				resultText.innerHTML = `
-                        Congratulations ${userName} </br>
-                        You Won </br>
-                       `;
-			} else {
-				resultText.innerHTML = `
-                        Sorry ${userName} </br>
-                        You Lost
-                       `;
+			//BOMB Creation
+			if (timer % 7 == 0) {
+				let bomb = new Bomb();
+				bomb.drop();
 			}
-			playagainBtn.addEventListener("click", function () {
-				location.reload(); // reload current page
-			});
-			cancelBtn.addEventListener("click", function () {
-				location.replace("index.html"); // Go Back to login page
-			});
-		}
-	}, 1000);
+
+			timer--;
+
+			timeLeft.textContent = `Timer 00:${timer}`;
+			if (timer == 0) {
+				clearInterval(birdsInterval);
+				resultPop.style.display = "block";
+				showOverlay();
+				bgSound.pause();
+				if (Bird.score >= 50) {
+					resultText.innerHTML = `
+							Congratulations ${userName} </br>
+							You Won </br>
+						   `;
+				} else {
+					resultText.innerHTML = `
+							Sorry ${userName} </br>
+							You Lost
+						   `;
+				}
+				playagainBtn.addEventListener("click", function () {
+					location.reload(); // reload current page
+				});
+				cancelBtn.addEventListener("click", function () {
+					location.replace("index.html"); // Go Back to login page
+				});
+			}
+		}, 1000);
+	});
 });
