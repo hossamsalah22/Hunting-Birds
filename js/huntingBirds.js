@@ -178,13 +178,14 @@ function randomBirds(birdsArray) {
 } // create Random Bird
 
 window.addEventListener("load", function () {
-	bgSound.play();
 	let timer = 60;
 	let birdsArray = [blackBird, cyanBird, whiteBird];
 	currentUser.textContent = `Username:${userName}`;
 	currentLevel.textContent = `Level:${level}`;
+	startMessage.querySelector("h1").textContent += ` ${userName}`;
 	startGame.addEventListener("click", function () {
 		hideStart();
+		bgSound.play();
 		let birdsInterval = window.setInterval(function () {
 			for (let i = 0; i < 4; i++) {
 				randomBirds(birdsArray);
