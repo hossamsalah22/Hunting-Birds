@@ -1,5 +1,3 @@
-Sure, here's a corrected version of the code with proper Markdown formatting:
-
 # Hunting-Birds
 
 This is a simple web-based game that allows users to hunt birds using a virtual gun. The game is built using JavaScript and HTML5 canvas.
